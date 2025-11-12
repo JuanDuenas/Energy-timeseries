@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8' 
 
 services:
   timescaledb:
@@ -10,6 +10,8 @@ services:
       - POSTGRES_DB=energia_db
     ports:
       - "5432:5432"
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
     networks:
       - energia_net
     healthcheck:
@@ -62,3 +64,6 @@ services:
 networks:
   energia_net:
     driver: bridge
+
+volumes:
+  timescaledb-data:
