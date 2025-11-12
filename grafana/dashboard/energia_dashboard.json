@@ -1,0 +1,137 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 1,
+      "title": "Producción Promedio por Tipo (1m bucket)",
+      "type": "timeseries",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT time_bucket('1 minute', timestamp) AS \"time\", type, AVG(value) AS promedio FROM measurements WHERE timestamp > now() - interval '1 hour' GROUP BY 1,2 ORDER BY 1;"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 2,
+      "title": "Promedio Móvil (5m) - Solar",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 10 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "WITH t AS (SELECT time_bucket('1 minute', timestamp) AS t, AVG(value) AS avg_value FROM measurements WHERE type='solar' AND timestamp > now() - interval '1 hour' GROUP BY t ORDER BY t) SELECT t AS \"time\", AVG(avg_value) OVER (ORDER BY t ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) AS moving_avg FROM t;"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 3,
+      "title": "Promedio Móvil (5m) - Eólica",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 10 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "WITH t AS (SELECT time_bucket('1 minute', timestamp) AS t, AVG(value) AS avg_value FROM measurements WHERE type='eolica' AND timestamp > now() - interval '1 hour' GROUP BY t ORDER BY t) SELECT t AS \"time\", AVG(avg_value) OVER (ORDER BY t ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) AS moving_avg FROM t;"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 4,
+      "title": "Tendencia lineal (últimos 30 min) - Solar (slope)",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 17 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT regr_slope(value, EXTRACT(EPOCH FROM timestamp)) AS slope FROM measurements WHERE type='solar' AND timestamp > now() - interval '30 minute';"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 5,
+      "title": "Promedio Solar (últimos 5 min)",
+      "type": "gauge",
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 17 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT AVG(value) AS promedio_actual FROM measurements WHERE type = 'solar' AND timestamp > now() - interval '5 minute';"
+        }
+      ],
+      "options": {
+        "fieldOptions": { "calcs": ["last"], "defaults": { "unit": "kw" } }
+      },
+      "alert": {
+        "name": "Alerta - Solar bajo",
+        "conditions": [
+          {
+            "evaluator": { "params": [200], "type": "lt" },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "5m", "now"] },
+            "reducer": { "type": "avg", "params": [] },
+            "type": "query"
+          }
+        ],
+        "for": "1m",
+        "frequency": "1m",
+        "handler": 1,
+        "noDataState": "no_data",
+        "execErrState": "alerting"
+      }
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 6,
+      "title": "Producción Total por Ubicación (última hora)",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 16, "x": 0, "y": 22 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT location, SUM(value) AS total FROM measurements WHERE timestamp > now() - interval '1 hour' GROUP BY location ORDER BY total DESC;"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "grafana-postgresql-datasource" },
+      "id": 7,
+      "title": "Últimas mediciones (tabla)",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 22 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT timestamp, type, sensor_id, location, value FROM measurements ORDER BY timestamp DESC LIMIT 20;"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["energia", "timeseries"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timezone": "browser",
+  "title": "Energía Renovable - Dashboard (Mejorado)",
+  "version": 1
+}

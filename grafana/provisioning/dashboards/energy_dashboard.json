@@ -1,0 +1,35 @@
+{
+  "id": null,
+  "title": "Panel de Energía Renovable",
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "table",
+      "title": "Últimas mediciones",
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT timestamp, type, location, value FROM measurements ORDER BY timestamp DESC LIMIT 10;",
+          "format": "table"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 }
+    },
+    {
+      "type": "graph",
+      "title": "Promedio por tipo de energía (última hora)",
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT time_bucket('5 minutes', timestamp) AS t, type, AVG(value) AS promedio FROM measurements WHERE timestamp > now() - interval '1 hour' GROUP BY t, type ORDER BY t;",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 10 },
+      "lines": true,
+      "linewidth": 2
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}
