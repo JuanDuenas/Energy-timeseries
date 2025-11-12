@@ -1,15 +1,16 @@
 apiVersion: 1
 
 datasources:
-  - name: TimescaleDB
+  - name: grafana-postgresql-datasource
     type: postgres
     access: proxy
     url: timescaledb:5432
-    database: energydb
+    database: energia_db
     user: postgres
-    password: postgres
+    secureJsonData:
+      password: postgres
     jsonData:
       sslmode: disable
-      postgresVersion: 1500
+      postgresVersion: 1600
       timescaledb: true
     isDefault: true

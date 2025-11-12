@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     networks:
       - energia_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d energia_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   api:
     build: ./api
@@ -25,7 +30,8 @@ services:
       - DB_PASS=postgres
       - DB_PORT=5432
     depends_on:
-      - timescaledb
+      timescaledb:
+        condition: service_healthy
     networks:
       - energia_net
 
@@ -38,12 +44,18 @@ services:
       - energia_net
 
   grafana:
-    image: grafana/grafana:latest
+    build: ./grafana
     container_name: grafana
     ports:
       - "3000:3000"
     depends_on:
       - timescaledb
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
     networks:
       - energia_net
 
