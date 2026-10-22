@@ -1,27 +1,27 @@
-# ⚡ Energy-timeseries
+# Energy-timeseries
 
 Sistema de monitoreo de energía renovable en tiempo real basado en microservicios. Simula sensores de plantas solares y parques eólicos, almacena las mediciones en **TimescaleDB** (PostgreSQL optimizado para series de tiempo) y las visualiza mediante dashboards en **Grafana**, todo orquestado con **Docker Compose**.
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
-- [Arquitectura](#-arquitectura)
-- [Tecnologías](#-tecnologías)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Requisitos Previos](#-requisitos-previos)
-- [Instalación y Puesta en Marcha](#-instalación-y-puesta-en-marcha)
-- [Servicios y Puertos](#-servicios-y-puertos)
-- [API REST](#-api-rest)
-- [Simulador de Datos](#-simulador-de-datos)
-- [Base de Datos](#-base-de-datos)
-- [Grafana y Dashboards](#-grafana-y-dashboards)
-- [Variables de Entorno](#-variables-de-entorno)
-- [Backups](#-backups)
+- [Arquitectura](#arquitectura)
+- [Tecnologías](#tecnologías)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Requisitos Previos](#requisitos-previos)
+- [Instalación y Puesta en Marcha](#instalación-y-puesta-en-marcha)
+- [Servicios y Puertos](#servicios-y-puertos)
+- [API REST](#api-rest)
+- [Simulador de Datos](#simulador-de-datos)
+- [Base de Datos](#base-de-datos)
+- [Grafana y Dashboards](#grafana-y-dashboards)
+- [Variables de Entorno](#variables-de-entorno)
+- [Backups](#backups)
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 ```
 ┌─────────────────┐         ┌──────────────────┐         ┌──────────────────┐
@@ -39,7 +39,7 @@ Todos los servicios se comunican dentro de la red Docker interna `energia_net`.
 
 ---
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 | Componente       | Tecnología                          | Versión        |
 |------------------|--------------------------------------|----------------|
@@ -53,7 +53,7 @@ Todos los servicios se comunican dentro de la red Docker interna `energia_net`.
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Energy-timeseries/
@@ -81,7 +81,7 @@ Energy-timeseries/
 │   ├── Dockerfile
 │   └── provisioning/
 │       ├── datasources/
-│       │   └── datasource.yml  # Conexión a TimescaleDB
+│       │   └── datasource.yml        # Conexión a TimescaleDB
 │       └── dashboards/
 │           ├── dashboards.yml        # Proveedor de dashboards
 │           └── energia_dashboard.json # Dashboard preconfigurado
@@ -92,7 +92,7 @@ Energy-timeseries/
 
 ---
 
-## ✅ Requisitos Previos
+## Requisitos Previos
 
 - [Docker](https://www.docker.com/) >= 20.x
 - [Docker Compose](https://docs.docker.com/compose/) (incluido en Docker Desktop)
@@ -100,7 +100,7 @@ Energy-timeseries/
 
 ---
 
-## 🚀 Instalación y Puesta en Marcha
+## Instalación y Puesta en Marcha
 
 ### 1. Clonar el repositorio
 
@@ -125,11 +125,11 @@ docker compose ps
 
 ### 4. Acceder a los servicios
 
-| Servicio   | URL                                    |
-|------------|----------------------------------------|
-| API Docs   | http://localhost:5000/docs             |
-| Grafana    | http://localhost:3000                  |
-| TimescaleDB| `localhost:5432` (cliente PostgreSQL)  |
+| Servicio    | URL                                   |
+|-------------|---------------------------------------|
+| API Docs    | http://localhost:5000/docs            |
+| Grafana     | http://localhost:3000                 |
+| TimescaleDB | `localhost:5432` (cliente PostgreSQL) |
 
 ### 5. Detener los servicios
 
@@ -145,18 +145,18 @@ docker compose down -v
 
 ---
 
-## 🔌 Servicios y Puertos
+## Servicios y Puertos
 
-| Servicio        | Puerto Interno | Puerto Expuesto | Descripción                          |
-|-----------------|---------------|-----------------|--------------------------------------|
-| `timescaledb`   | 5432          | 5432            | Base de datos TimescaleDB/PostgreSQL |
-| `api`           | 8000          | 5000            | API REST FastAPI                     |
-| `data_simulator`| —             | —               | Servicio interno, sin puerto expuesto|
-| `grafana`       | 3000          | 3000            | Dashboard de visualización           |
+| Servicio         | Puerto Interno | Puerto Expuesto | Descripción                           |
+|------------------|----------------|-----------------|---------------------------------------|
+| `timescaledb`    | 5432           | 5432            | Base de datos TimescaleDB/PostgreSQL  |
+| `api`            | 8000           | 5000            | API REST FastAPI                      |
+| `data_simulator` | —              | —               | Servicio interno, sin puerto expuesto |
+| `grafana`        | 3000           | 3000            | Dashboard de visualización            |
 
 ---
 
-## 📡 API REST
+## API REST
 
 La API está construida con **FastAPI** y expone los siguientes endpoints:
 
@@ -187,9 +187,10 @@ Inserta una nueva medición de sensor en la base de datos.
 Retorna las últimas N mediciones ordenadas por timestamp descendente.
 
 **Parámetros:**
-| Parámetro | Tipo | Default | Descripción                  |
-|-----------|------|---------|------------------------------|
-| `limit`   | int  | `10`    | Número máximo de registros   |
+
+| Parámetro | Tipo | Default | Descripción                |
+|-----------|------|---------|----------------------------|
+| `limit`   | int  | `10`    | Número máximo de registros |
 
 **Respuesta:**
 ```json
@@ -209,7 +210,7 @@ Retorna las últimas N mediciones ordenadas por timestamp descendente.
 
 ### `GET /data/average`
 
-Retorna el **promedio de potencia** agrupado por tipo de energía.
+Retorna el promedio de potencia agrupado por tipo de energía.
 
 **Respuesta:**
 ```json
@@ -219,20 +220,20 @@ Retorna el **promedio de potencia** agrupado por tipo de energía.
 ]
 ```
 
-> Documentación interactiva completa disponible en: **http://localhost:5000/docs** (Swagger UI)
+Documentación interactiva disponible en: **http://localhost:5000/docs** (Swagger UI)
 
 ---
 
-## 🤖 Simulador de Datos
+## Simulador de Datos
 
 El servicio `data_simulator` simula **4 sensores** de energía renovable que envían lecturas periódicas a la API:
 
-| Sensor ID | Tipo     | Ubicación             | Rango de Valores |
-|-----------|----------|-----------------------|------------------|
-| 1         | solar    | Planta Solar Norte    | 100 – 1000 kW   |
-| 2         | solar    | Planta Solar Sur      | 100 – 1000 kW   |
-| 3         | eólica   | Parque Eólico Este    | 200 – 1200 kW   |
-| 4         | eólica   | Parque Eólico Oeste   | 200 – 1200 kW   |
+| Sensor ID | Tipo   | Ubicación           | Rango de Valores |
+|-----------|--------|---------------------|------------------|
+| 1         | solar  | Planta Solar Norte  | 100 – 1000 kW    |
+| 2         | solar  | Planta Solar Sur    | 100 – 1000 kW    |
+| 3         | eólica | Parque Eólico Este  | 200 – 1200 kW    |
+| 4         | eólica | Parque Eólico Oeste | 200 – 1200 kW    |
 
 - **Intervalo de envío:** cada `5` segundos (configurable vía `INTERVAL`)
 - **Endpoint destino:** `http://api:8000/data` (interno Docker)
@@ -240,22 +241,22 @@ El servicio `data_simulator` simula **4 sensores** de energía renovable que env
 
 ---
 
-## 🗄️ Base de Datos
+## Base de Datos
 
 **TimescaleDB** extiende PostgreSQL con optimizaciones nativas para series temporales mediante el concepto de **hypertable**.
 
 ### Tabla `measurements`
 
-| Columna      | Tipo             | Descripción                            |
-|--------------|------------------|----------------------------------------|
-| `id`         | SERIAL           | Identificador autoincremental          |
-| `sensor_id`  | INT              | ID del sensor origen                   |
-| `timestamp`  | TIMESTAMPTZ      | Marca de tiempo con zona horaria       |
-| `value`      | DOUBLE PRECISION | Potencia registrada (kW)               |
-| `type`       | VARCHAR(20)      | Tipo de energía (`solar` / `eolica`)   |
-| `location`   | VARCHAR(100)     | Ubicación física del sensor            |
+| Columna     | Tipo             | Descripción                           |
+|-------------|------------------|---------------------------------------|
+| `id`        | SERIAL           | Identificador autoincremental         |
+| `sensor_id` | INT              | ID del sensor origen                  |
+| `timestamp` | TIMESTAMPTZ      | Marca de tiempo con zona horaria      |
+| `value`     | DOUBLE PRECISION | Potencia registrada (kW)              |
+| `type`      | VARCHAR(20)      | Tipo de energía (`solar` / `eolica`)  |
+| `location`  | VARCHAR(100)     | Ubicación física del sensor           |
 
-### Índices creados
+### Índices
 
 ```sql
 -- Consultas de tendencia temporal
@@ -268,15 +269,15 @@ CREATE INDEX idx_measurements_type ON measurements (type);
 ### Hypertable
 
 La tabla es convertida automáticamente en una **hypertable** de TimescaleDB particionada por `timestamp`, lo que permite:
-- Queries analíticas muy rápidas sobre rangos de tiempo
+- Queries analíticas rápidas sobre rangos de tiempo
 - Compresión nativa de datos históricos
 - Funciones de ventana temporal avanzadas
 
 ---
 
-## 📊 Grafana y Dashboards
+## Grafana y Dashboards
 
-Grafana está **preconfigurado automáticamente** mediante provisioning:
+Grafana está preconfigurado mediante provisioning automático:
 
 - **Datasource:** Conexión directa a TimescaleDB (`timescaledb:5432 / energia_db`)
 - **Dashboard:** `energia_dashboard.json` cargado automáticamente al iniciar
@@ -288,39 +289,39 @@ Grafana está **preconfigurado automáticamente** mediante provisioning:
 | Usuario  | `admin` |
 | Password | `admin` |
 
-> ⚠️ Se recomienda cambiar las credenciales en entornos de producción.
+> Se recomienda cambiar las credenciales en entornos de producción.
 
 ---
 
-## ⚙️ Variables de Entorno
+## Variables de Entorno
 
 ### API (`api`)
 
-| Variable   | Default        | Descripción              |
-|------------|----------------|--------------------------|
-| `DB_HOST`  | `timescaledb`  | Host de la base de datos |
-| `DB_PORT`  | `5432`         | Puerto PostgreSQL         |
-| `DB_NAME`  | `energia_db`   | Nombre de la base de datos|
-| `DB_USER`  | `postgres`     | Usuario de PostgreSQL     |
-| `DB_PASS`  | `postgres`     | Contraseña de PostgreSQL  |
+| Variable  | Default       | Descripción                |
+|-----------|---------------|----------------------------|
+| `DB_HOST` | `timescaledb` | Host de la base de datos   |
+| `DB_PORT` | `5432`        | Puerto PostgreSQL           |
+| `DB_NAME` | `energia_db`  | Nombre de la base de datos |
+| `DB_USER` | `postgres`    | Usuario de PostgreSQL       |
+| `DB_PASS` | `postgres`    | Contraseña de PostgreSQL    |
 
 ### Simulador (`data_simulator`)
 
-| Variable   | Default                  | Descripción                        |
-|------------|--------------------------|------------------------------------|
-| `API_URL`  | `http://api:8000/data`   | Endpoint de la API                 |
-| `INTERVAL` | `5`                      | Segundos entre cada ronda de envíos|
+| Variable   | Default                | Descripción                         |
+|------------|------------------------|-------------------------------------|
+| `API_URL`  | `http://api:8000/data` | Endpoint de la API                  |
+| `INTERVAL` | `5`                    | Segundos entre cada ronda de envíos |
 
 ### Grafana (`grafana`)
 
-| Variable                      | Default  | Descripción              |
-|-------------------------------|----------|--------------------------|
-| `GF_SECURITY_ADMIN_USER`      | `admin`  | Usuario administrador    |
-| `GF_SECURITY_ADMIN_PASSWORD`  | `admin`  | Contraseña administrador |
+| Variable                     | Default | Descripción           |
+|------------------------------|---------|-----------------------|
+| `GF_SECURITY_ADMIN_USER`     | `admin` | Usuario administrador |
+| `GF_SECURITY_ADMIN_PASSWORD` | `admin` | Contraseña admin      |
 
 ---
 
-## 💾 Backups
+## Backups
 
 El directorio `backups/` contiene el archivo `energia_db.sql` con un dump completo de la base de datos.
 
@@ -342,6 +343,6 @@ docker exec timescaledb pg_dump -U postgres energia_db > backups/energia_db_$(da
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto es de uso educativo y libre distribución.
